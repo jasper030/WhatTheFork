@@ -1,0 +1,52 @@
+body { 
+    margin: 0; 
+    padding: 0; 
+    background: #f7f7fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 30px;
+    color: #333;
+}
+
+#button-area {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#getFood {
+    padding: 10px 24px;
+    font-size: 1.1em;
+    background: #ffb347;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+}
+
+#getFood:hover {
+    background: #ff9800;
+}
+
+#map {
+    width: 70vw;
+    height: 70vh;
+    margin: 0 auto;
+    border: 2px solid #e0e0e0;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    background: #fff;
+}
+
+#result {
+    padding: 10px;
+    width: 600px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: center;
+}

@@ -39,31 +39,50 @@ async function main() {
     .addTo(map)
 
     document.getElementById("getFood").addEventListener("click", () => {
-        fetch(`http://localhost:3000/get_food?lat=${currentLocation.lat}&lng=${currentLocation.lng}`)
+        fetch(`https://whatthefork.netlify.app/.netlify/functions/get_food?lat=${currentLocation.lat}&lng=${currentLocation.lng}`)
         .then(res => res.json())
         .then(data => {
-            let storeInfo = new mapboxgl.Popup()
-                                        .setHTML(`
-                                            <h3>${data.name}</h3>
-                                            <p>${data.address}</p>
-                                            <p>⭐ ${data.rating}</p>`)
-                                        .addTo(map);
+            // Check for valid restaurant data
+            if (
+                data &&
+                typeof data === "object" &&
+                typeof data.name === "string" &&
+                typeof data.address === "string" &&
+                data.location &&
+                typeof data.location.lat === "number" &&
+                typeof data.location.lng === "number"
+            ) {
+                let storeInfo = new mapboxgl.Popup()
+                    .setHTML(`
+                        <h3>${data.name}</h3>
+                        <p>${data.address}</p>
+                        <p>⭐ ${data.rating}</p>`)
+                    .addTo(map);
 
-            // Delete previous marker
-            if (prev_marker != null) {
-                prev_marker.remove();
+                // Delete previous marker
+                if (prev_marker != null) {
+                    prev_marker.remove();
+                }
+
+                // Add marker on the map
+                prev_marker = new mapboxgl.Marker()
+                    .setLngLat([data.location.lng, data.location.lat])
+                    .addTo(map)
+                    .setPopup(storeInfo);
+
+                map.flyTo({ center: [data.location.lng, data.location.lat], zoom: 16 });
+            } else if (
+                data &&
+                typeof data === "object" &&
+                typeof data.message === "string"
+            ) {
+                alert(data.message); // Show the message from the API
+            } else {
+                alert("No valid restaurant data found.");
             }
-
-            // Add marker on the map
-            prev_marker = new mapboxgl.Marker()
-            .setLngLat([data.location.lng, data.location.lat])
-            .addTo(map)
-            .setPopup(storeInfo);
-            
-            map.flyTo({ center: [data.location.lng, data.location.lat], zoom: 16 });
         })
         .catch(error => {
-            alert(`Failed to connect to the server: ${error.message}`);
+            alert(`Error: ${error.message}`);
         });
     });
 };

@@ -1,9 +1,4 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-const MAPBOX_API = process.env.MAPBOX_ACCESS_TOKEN;
-
-mapboxgl.accessToken = `${MAPBOX_API}`;
+mapboxgl.accessToken = "pk.eyJ1IjoiamFzcGVyLWNjaCIsImEiOiJjbWJidnVza2gxMmwxMmlwbzgzdXB4YmczIn0.Wetuz4uv83M42FkTW8WVEA";
 
 
 function getCurrentLocation() {

@@ -1,5 +1,3 @@
-import fetch from "node-fetch"; // For calling Google API
-
 export async function handler(event, context) {
     const corsHeaders = {
         "Access-Control-Allow-Origin": "https://whatthefork.netlify.app",

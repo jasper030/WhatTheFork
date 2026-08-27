@@ -1,5 +1,18 @@
-backend/.env
+# Environment files
+.env
+.env.*
+*.env
+*.env.*
 
+# Dependencies
 node_modules/
-# Local Netlify folder
-.netlify
+
+# Build and dist outputs
+dist/
+
+# Netlify local directory
+.netlify/
+
+# Tooling and CLI directories
+.agents/
+

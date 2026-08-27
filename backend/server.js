@@ -4,11 +4,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5500;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+  // res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500", "localhost:5500");
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
 
   next();
@@ -22,6 +23,7 @@ app.get("/get_food", async (req, res) => {
       return res.status(400).json({ error: "Missing lat/lng" });
     }
 
+    console.log(lat, lng);
     // Call Google Places Nearby Search API
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=3000&type=restaurant&key=${GOOGLE_API_KEY}`;
 

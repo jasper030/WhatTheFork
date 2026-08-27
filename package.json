@@ -1,20 +1,25 @@
 {
   "name": "whatthefork",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite --mode development --config frontend/vite.config.js",
+    "build": "vite build --config frontend/vite.config.js",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "vite": "^7.1.12",
     "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.0.1",
+    "@netlify/vite-plugin": "^2.8.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "mapbox-gl": "^3.15.0",

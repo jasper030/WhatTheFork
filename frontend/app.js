@@ -1,5 +1,4 @@
-mapboxgl.accessToken = "pk.eyJ1IjoiamFzcGVyLWNjaCIsImEiOiJjbWJidnVza2gxMmwxMmlwbzgzdXB4YmczIn0.Wetuz4uv83M42FkTW8WVEA";
-
+import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
 
 function getCurrentLocation() {
     return new Promise((resolve, reject) => {
@@ -14,9 +13,13 @@ function getCurrentLocation() {
     });
 }; 
 
-let prev_marker = null;
-
 async function main() {
+    const MAP_KEY = "REMOVED_KEY";
+    setOptions({key: MAP_KEY});
+
+    const { Map, InfoWindow } = await importLibrary("maps");
+    const { AdvancedMarkerElement, PinElement } = await importLibrary("marker");
+
     let currentLocation;
     try {
         currentLocation = await getCurrentLocation();
@@ -24,22 +27,27 @@ async function main() {
         alert(`Could not get your location.`);
     }
 
-    const map = new mapboxgl.Map({
-        container: "map",
-        center: [currentLocation.lng, currentLocation.lat],
-        zoom: 14
+    // Create map element
+    const mapEl = document.getElementById("map");
+    const mapOptions = {
+        center: currentLocation,
+        zoom: 14,
+        mapId: "STORE_MAP",
+    };
+
+    const map = new Map(mapEl, mapOptions);
+
+    // Show user position
+    const userMarker = new AdvancedMarkerElement({
+        map: map,
+        position: currentLocation,
+        title: "You",
     });
 
-    map.on('style.load', () => {
-        map.setFog({});
-    });
-
-    let userMarker = new mapboxgl.Marker()
-    .setLngLat([currentLocation.lng, currentLocation.lat])
-    .addTo(map)
-
+    let storeMarker = null;
+    // Button function
     document.getElementById("getFood").addEventListener("click", () => {
-        fetch(`https://whatthefork.netlify.app/.netlify/functions/get_food?lat=${currentLocation.lat}&lng=${currentLocation.lng}`)
+        fetch(`${import.meta.env.VITE_API_URL}get_food?lat=${currentLocation.lat}&lng=${currentLocation.lng}`)
         .then(res => res.json())
         .then(data => {
             // Check for valid restaurant data
@@ -52,25 +60,28 @@ async function main() {
                 typeof data.location.lat === "number" &&
                 typeof data.location.lng === "number"
             ) {
-                let storeInfo = new mapboxgl.Popup()
-                    .setHTML(`
-                        <h3>${data.name}</h3>
-                        <p>${data.address}</p>
-                        <p>⭐ ${data.rating}</p>`)
-                    .addTo(map);
-
-                // Delete previous marker
-                if (prev_marker != null) {
-                    prev_marker.remove();
+                if (storeMarker !== null) {
+                    storeMarker.map = null; // Remove the marker from the map
                 }
-
-                // Add marker on the map
-                prev_marker = new mapboxgl.Marker()
-                    .setLngLat([data.location.lng, data.location.lat])
-                    .addTo(map)
-                    .setPopup(storeInfo);
-
-                map.flyTo({ center: [data.location.lng, data.location.lat], zoom: 16 });
+                storeMarker = new AdvancedMarkerElement({
+                        map: map,
+                        position: {
+                            lat: data.location.lat, 
+                            lng: data.location.lng,
+                        },
+                });
+                let storeInfo = new InfoWindow({
+                    content: `<h3>${data.name}</h3>
+                              <p>${data.address}</p>
+                              <p>⭐ ${data.rating}</p>`,
+                    headerContent: `Store information`,
+                });
+                
+                storeInfo.open({
+                    anchor: storeMarker,
+                    map: map,
+                });
+                
             } else if (
                 data &&
                 typeof data === "object" &&

@@ -14,7 +14,7 @@ function getCurrentLocation() {
 }; 
 
 async function main() {
-    const MAP_KEY = "REMOVED_KEY";
+    const MAP_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     setOptions({key: MAP_KEY});
 
     const { Map, InfoWindow } = await importLibrary("maps");
@@ -47,7 +47,8 @@ async function main() {
     let storeMarker = null;
     // Button function
     document.getElementById("getFood").addEventListener("click", () => {
-        fetch(`${import.meta.env.VITE_API_URL}get_food?lat=${currentLocation.lat}&lng=${currentLocation.lng}`)
+        const apiUrl = import.meta.env.VITE_API_URL || '/.netlify/functions/';
+        fetch(`${apiUrl}get_food?lat=${currentLocation.lat}&lng=${currentLocation.lng}`)
         .then(res => res.json())
         .then(data => {
             // Check for valid restaurant data

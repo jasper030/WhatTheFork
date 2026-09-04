@@ -8,6 +8,7 @@ export default defineConfig({
     port: 5500,
   },
   root: path.resolve(__dirname), // tells Vite where to look
+  envDir: path.resolve(__dirname, '../'), // ensures Vite reads environment variables from root process.env
   build: {
     outDir: path.resolve(__dirname, '../dist'),
   },
